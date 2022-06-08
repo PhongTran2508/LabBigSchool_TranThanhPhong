@@ -12,14 +12,26 @@ namespace LabBigSchool_TranThanhPhong.Controllers
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
+
         public CoursesController()
         {
             _dbContext = new ApplicationDbContext();
-        } 
+        }
+
+
+        // GET: Courses
+        public ActionResult Create()
+        {
+            var viewModels = new CourseViewModels
+            {
+                Categories = _dbContext.Categoríe.ToList()
+            };
+            return View(viewModels);
+        }
+
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // GET: Courses
         public ActionResult Create(CourseViewModels viewModels)
         {
             if (!ModelState.IsValid)
@@ -32,7 +44,7 @@ namespace LabBigSchool_TranThanhPhong.Controllers
                 LecturerId=User.Identity.GetUserId(),
                 DateTime=viewModels.GetDateTime(),
                 CategoryId=viewModels.Category,
-                Place=viewModels.Place
+                Place=viewModels.Place,
             };
             _dbContext.Courses.Add(course);
             _dbContext.SaveChanges();
